@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
+use App\Repository\ObjectClassRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -29,10 +30,10 @@ class ObjectClass
     private string $name;
 
     /**
-     * @var string
-     * @ORM\Column(name="source_name", type="string")
+     * @var string|null
+     * @ORM\Column(name="source_name", type="string", nullable=true)
      */
-    private string $sourceName;
+    private ?string $sourceName;
 
     /**
      * @var Collection
