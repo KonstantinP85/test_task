@@ -18,8 +18,8 @@ class RoleController extends AbstractController
      */
     public function indexAction(RoleManager $manager): Response
     {
+        $roles = $manager->getAllRoles();
 
-        $forRender = [];
-        return $this->render('role/index.html.twig', $forRender);
+        return $this->render('role/index.html.twig', ['roles' => $roles]);
     }
 }

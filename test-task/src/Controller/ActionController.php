@@ -18,8 +18,8 @@ class ActionController extends AbstractController
      */
     public function indexAction(ActionManager $manager): Response
     {
+        $actions = $manager->getAllActions();
 
-        $forRender = [];
-        return $this->render('action/index.html.twig', $forRender);
+        return $this->render('action/index.html.twig', ['actions' => $actions]);
     }
 }

@@ -1,32 +1,21 @@
 {% extends 'base.html.twig' %}
 {% block body %}
     <div class="container-fluid">
-        <div class="row no-gutters mt-4">
-            <div class="col-1">
-            <h4>Фильтр:</h4>
-            </div>
-            <div class="col-2">
-                <select class="form-select" aria-label="Default select example">
-                    <option selected>Open this select menu</option>
-                    <option value="1">One</option>
-                    <option value="2">Two</option>
-                    <option value="3">Three</option>
-                </select>
-            </div>
-        </div>
         <div class="row no-gutters mt-3">
             <div class="col-1">
                 <h5>Роли:</h5>
             </div>
             <div class="col-2">
-                <select class="form-select" aria-label="Default select example">
-                    <option selected>Open this select menu</option>
-                    <option value="1">One</option>
-                    <option value="2">Two</option>
-                    <option value="3">Three</option>
+                <select id="role-select" class="form-select" aria-label="Default select example">
+                    <option selected>Выбрать</option>
+                    {% for roles_item in roles %}
+                        <option value={{ roles_item.id }}>{{ roles_item.name }}</option>
+                    {% endfor %}
                 </select>
             </div>
         </div>
     </div>
+
+        {% include 'role/table.html.twig' %}
 
 {% endblock %}

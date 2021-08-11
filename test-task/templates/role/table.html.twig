@@ -1,0 +1,21 @@
+<div id="result-role" class="container-fluid mt-3">
+    {% if actions is defined %}
+    <table class="table table-dark table-striped table-hover" id="result-role">
+        <thead>
+        <tr>
+            <th scope="col">Объекты</th>
+            {% for actions_item in actions %}
+                <th scope="col">{{ actions_item.name }}</th>
+            {% endfor %}
+        </tr>
+        </thead>
+        <tbody>
+
+        <tr>
+
+        </tr>
+
+        </tbody>
+    </table>
+    {% endif %}
+</div>
