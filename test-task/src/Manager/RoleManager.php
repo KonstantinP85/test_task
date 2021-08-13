@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Manager;
 
+use App\Entity\Role;
 use App\Repository\RoleRepository;
 
 class RoleManager
@@ -27,5 +28,20 @@ class RoleManager
     public function getAllRoles(): array
     {
         return $this->roleRepository->findAll();
+    }
+
+    /**
+     * @param $id
+     * @return Role
+     * @throws \Exception
+     */
+    public function get($id): Role
+    {
+        $role = $this->roleRepository->find($id);
+        if (!$role instanceof Role) {
+            throw new \Exception("Invalid role id");
+        }
+
+        return $role;
     }
 }

@@ -42,7 +42,8 @@ class ObjectClass
     private Collection $accesses;
 
     /**
-     *
+     * @param string $name
+     * @param string $sourceName
      */
     public function __construct(string $name, string $sourceName)
     {
@@ -77,17 +78,17 @@ class ObjectClass
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getSourceName(): string
+    public function getSourceName(): ?string
     {
         return $this->sourceName;
     }
 
     /**
-     * @param string $sourceName
+     * @param string|null $sourceName
      */
-    public function setSourceName(string $sourceName): void
+    public function setSourceName(?string $sourceName): void
     {
         $this->sourceName = $sourceName;
     }

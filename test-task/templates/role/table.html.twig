@@ -10,11 +10,31 @@
         </tr>
         </thead>
         <tbody>
-
-        <tr>
-
-        </tr>
-
+        {% for objectClasses_item in objectClasses %}
+            <tr {% if objectClasses_item.sourceName is not null %}id={{ objectClasses_item.sourceName }}{% endif %}>
+                <td>
+                    {% if objectClasses_item.sourceName is not null %}<span id="plus" style="cursor: pointer;" s-name={{ objectClasses_item.sourceName  }}>+</span><span id="minus" style="cursor: pointer;">-</span>{% endif %} {{ objectClasses_item.name }}
+                </td>
+                {% for actions_item in actions %}
+                    <td>
+                        <input id="access"
+                               class="form-check-input"
+                               type="checkbox"
+                               object-id={{ objectClasses_item.id }}
+                               action-id={{ actions_item.id }}
+                                {% if objectClasses_item.sourceName is not null %}
+                               o-id={{ objectClasses_item.sourceName }}
+                                {% endif %}
+                        {% for accessesMatrix_item in accessesMatrix %}
+                            {%if (accessesMatrix_item.action.id == actions_item.id) and (accessesMatrix_item.objectClass.id == objectClasses_item.id) %}
+                                checked
+                            {% endif %}
+                        {% endfor %}
+                        >
+                    </td>
+                {% endfor %}
+            </tr>
+        {% endfor %}
         </tbody>
     </table>
     {% endif %}

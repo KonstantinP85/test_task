@@ -23,10 +23,25 @@ class ActionManager
     }
 
     /**
-     * @return array
+     * @return array|Action[]
      */
     public function getAllActions(): array
     {
         return $this->actionRepository->findAll();
+    }
+
+    /**
+     * @param $id
+     * @return Action
+     * @throws \Exception
+     */
+    public function get($id): Action
+    {
+        $action = $this->actionRepository->find($id);
+        if (!$action instanceof Action) {
+            throw new \Exception("Invalid action id");
+        }
+
+        return $action;
     }
 }

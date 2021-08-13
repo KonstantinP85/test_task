@@ -10,11 +10,16 @@
         </tr>
         </thead>
         <tbody>
-
+        {% for objectClasses_item in objectClasses %}
         <tr>
-
+            <td>{{ objectClasses_item.name }}</td>
+            {% for roles_item in roles %}
+            <td>
+                <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+            </td>
+            {% endfor %}
         </tr>
-
+        {% endfor %}
         </tbody>
     </table>
     {% endif %}

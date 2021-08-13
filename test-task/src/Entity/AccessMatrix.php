@@ -37,17 +37,23 @@ class AccessMatrix
 
     /**
      * @var ObjectClass
-     * @ORM\ManyToOne(targetEntity=Action::class, inversedBy="accecces")
+     * @ORM\ManyToOne(targetEntity=ObjectClass::class, inversedBy="accecces")
      * @ORM\JoinColumn(name="object_class_id", referencedColumnName="id", nullable=false, onDelete="CASCADE")
      */
     private ObjectClass $objectClass;
+
+    /**
+     * @var string|null
+     * @ORM\Column(name="object_id", type="guid", nullable=true)
+     */
+    private ?string $objectId;
 
     /**
      * @param Role $role
      * @param Action $action
      * @param ObjectClass $objectClass
      */
-    public function __construct(Role $role, Action $action, ObjectClass $objectClass)
+    public function __construct(Role $role, Action $action, ObjectClass $objectClass, ?string $objectId = null)
     {
         $this->id = Uuid::uuid4()->toString();
         $this->role = $role;
@@ -56,6 +62,7 @@ class AccessMatrix
         $action->addAccessMatrix($this);
         $this->objectClass = $objectClass;
         $objectClass->addAccessMatrix($this);
+        $this->objectId = $objectId;
     }
 
     /**
@@ -127,5 +134,21 @@ class AccessMatrix
 
         $this->objectClass = $objectClass;
         $objectClass->addAccessMatrix($this);
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getObjectId(): ?string
+    {
+        return $this->objectId;
+    }
+
+    /**
+     * @param string|null $objectId
+     */
+    public function setObjectId(?string $objectId): void
+    {
+        $this->objectId = $objectId;
     }
 }
