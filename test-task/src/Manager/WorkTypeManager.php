@@ -23,9 +23,9 @@ class WorkTypeManager
     }
 
     /**
-     * @return array
+     * @return array|WorkType
      */
-    public function getAllWorkType(): array
+    public function getAll(): array
     {
         return $this->workTypeRepository->findAll();
     }

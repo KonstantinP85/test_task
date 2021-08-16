@@ -59,4 +59,22 @@ class ObjectClassManager
 
         return $objectClass;
     }
+
+    /**
+     * @return array
+     */
+    public function toArray(): array
+    {
+        $result = [];
+        $objectClasses = $this->getAllObjectClass();
+        foreach ($objectClasses as $objectClass) {
+            $result[] = [
+                'id' => $objectClass->getId(),
+                'name' => $objectClass->getName(),
+                'signature' => $objectClass->getSourceName()
+            ];
+        }
+
+        return $result;
+    }
 }

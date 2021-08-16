@@ -44,4 +44,22 @@ class ActionManager
 
         return $action;
     }
+
+    /**
+     * @return array
+     */
+    public function toArray(): array
+    {
+        $result = [];
+        $actions = $this->getAllActions();
+        foreach ($actions as $action) {
+            $result[] = [
+                'id' => $action->getId(),
+                'name' => $action->getName(),
+                'signature' => $action->getSignature()
+            ];
+        }
+
+        return $result;
+    }
 }
