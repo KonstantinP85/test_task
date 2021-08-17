@@ -6,8 +6,14 @@ namespace App\Manager;
 
 use App\DataProvider\ContainerDataProvider;
 use App\Entity\AccessMatrix;
+use App\Entity\Action;
+use App\Entity\ObjectClass;
+use App\Entity\Role;
 use App\Repository\AccessMatrixRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use App\Manager\Container\BidManager;
+use App\Manager\Container\WorksCtoManager;
+use App\Manager\Container\WorkTypeManager;
 
 class AccessMatrixManager
 {
@@ -89,55 +95,36 @@ class AccessMatrixManager
     {
         $role = $this->roleManager->get($arguments['role']);
         $action = $this->actionManager->get($arguments['action']);
-        if (ContainerDataProvider::isContainer($arguments['object'])) { //для главного списка
+        if (ContainerDataProvider::isContainer($arguments['object'])) {
             $objectClassId = $this->objectClassManager->getBySourceName($arguments['object']);
         } else {
             $objectClassId = $this->objectClassManager->get($arguments['object']);
         }
         if ($arguments['oId'] !== "" && !ContainerDataProvider::isContainer($arguments['oId'])) {
-            //для вложений no container
             $manager = $this->initManager($arguments['object']) . "Manager";
             $objectId = $this->{$manager}->get($arguments['oId']);
-            $accessMatrix = new AccessMatrix($role, $action, $objectClassId, $objectId->getId());
+            $this->recursive($objectId, $role, $action, $objectClassId);
         } elseif (!ContainerDataProvider::isContainer($arguments['oId'])) {
-            //главная, не контейнеры
             $accessMatrix = new AccessMatrix($role, $action, $objectClassId);
-        }
-        if (ContainerDataProvider::isContainer($arguments['oId'])) { echo 90;
-            //главная, контейнеры
-            $container = $this->{$this->initManager($arguments['oId']) . "Manager"}->getAll();
-            foreach ($this->{$this->initManager($arguments['oId']) . "Manager"}->getAll() as $element) {
-
-                $this->recursive($element, $role, $action, $objectClassId);
-            }
-            /*foreach ($all as $a) {
-                if ($a->getParentId() !== null) {
-                    $cto = $this->{$this->initManager($a->getParentId()) . "Manager"}->getAll();
-                    foreach ($cto as $c) {
-                        if ($a->getParentId() !== null) {
-                            $o = $this->{$this->initManager($c->getParentId()) . "Manager"}->getAll();
-                            foreach ($cto as $c) {
-
-                            }
-                        } else {
-                            $accessMatrix = new AccessMatrix($role, $action, $objectClassId, $c->getId());
-                            $this->entityManager->persist($accessMatrix);
-                            $this->entityManager->flush();
-                        }
-                    }
-                } else {
-                    $accessMatrix = new AccessMatrix($role, $action, $objectClassId, $a->getId());
-                    $this->entityManager->persist($accessMatrix);
-                    $this->entityManager->flush();
-                }
-            }*/
-        } else {
             $this->entityManager->persist($accessMatrix);
             $this->entityManager->flush();
         }
+        if (ContainerDataProvider::isContainer($arguments['oId'])) {
+            //главная, контейнеры
+            $container = $this->{$this->initManager($arguments['oId']) . "Manager"}->getAll();
+            foreach ($container as $element) {
+                $this->recursive($element, $role, $action, $objectClassId);
+            }
+        }
     }
 
-    public function recursive($element, $role, $action, $objectClassId)
+    /**
+     * @param $element
+     * @param Role $role
+     * @param Action $action
+     * @param ObjectClass $objectClassId
+     */
+    public function recursive($element, Role $role, Action $action, ObjectClass $objectClassId): void
     {
         if ($element->getParentId() !== null) {
             $accessMatrix = new AccessMatrix($role, $action, $objectClassId, $element->getId());
@@ -162,21 +149,21 @@ class AccessMatrixManager
     {
         $role = $this->roleManager->get($arguments['role']);
         $action = $this->actionManager->get($arguments['action']);
-        if ($arguments['oId'] === "") {           //main no container
+        if ($arguments['oId'] === "") { echo 90;
             $object = $this->objectClassManager->get($arguments['object']);
             $accessMatrix = $this->accessMatrixRepository->findOneBy([
                 'role' => $role,
                 'action' => $action,
                 'objectClass' => $object
             ]);
-        } elseif (!ContainerDataProvider::isContainer($arguments['oId'])) { // main container
+        } elseif (!ContainerDataProvider::isContainer($arguments['oId'])) { echo 89;
             $accessMatrix = $this->accessMatrixRepository->findOneBy([
                 'role' => $role,
                 'action' => $action,
                 'objectId' => $arguments['oId'],
             ]);
         }
-        if (ContainerDataProvider::isContainer($arguments['oId'])) {      //
+        if (ContainerDataProvider::isContainer($arguments['oId'])) {
             $object = $this->objectClassManager->get($arguments['object']);
             $accessMatrixWorkType = $this->accessMatrixRepository->findBy([
                 'role' => $role,

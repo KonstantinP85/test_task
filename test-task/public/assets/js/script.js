@@ -2,9 +2,9 @@ $(document).ready(function() {
     mainSelect();
     actionSelect();
     roleSelect();
-    ff();
+    mainValue();
 })
-function ff() {
+function mainValue() {
     var entity = window.location.pathname.split("/")[1]
     if (entity !== "") {
         $("#main-select").val(entity);
@@ -73,20 +73,10 @@ $(document).on('click', '#access', function () {
                     method: 'GET',
                     dataType: 'html',
                     data: {action: action, object: object, role: role, oId: oId},
-                    success: function (result) {
-                        $(trAll).each(function(i, item) {
+                    success: function () {
+                        $(trAll).each(function() {
                             if ($(tr).attr('id')) {
-                                $(trAll).each(function(i, item) {
-                                    if ($(item).attr('data-id') === $(tr).attr('id')) {
-                                        if ($(item).find('input[action-id="' + action+ '"').attr('action-id') === action) {
-                                            $(item).find('input[action-id="' + action+ '"').prop("checked", true);
-                                        }
-                                    }
-                                });
-                            }
-                            if ($(tr).attr('data-id')) {
-                                console.log(oId);
-                                console.log("ggg");
+                                recursiveChecked(trAll, tr, action);
                             }
                         });
                     }
@@ -99,16 +89,12 @@ $(document).on('click', '#access', function () {
                     dataType: 'html',
                     data: {action: action, object: object, role: role, oId: oId},
                     success: function () {
-                        console.log("ppp");
-                        $(trAll).each(function(i, it) {
+                        $(trAll).each(function() {
                             if ($(tr).attr('id')) {
-                                $(trAll).each(function(i, it) {
-                                    if ($(it).attr('data-id') === $(tr).attr('id')) {
-                                        if ($(it).find('input[action-id="' + action+ '"').attr('action-id') === action) {
-                                            $(it).find('input[action-id="' + action+ '"').prop("checked", false);
-                                        }
-                                    }
-                                });
+                                recursiveUnchecked(trAll, tr, action);
+                            } else {
+                                var objectClass = $('#' + $(tr).attr('data-id'));
+                                $(objectClass).find('input[action-id="' + action+ '"').prop("checked", false);
                             }
                         });
                     }
@@ -135,7 +121,6 @@ $(document).on('click', '#plus', function () {
                         if (item.parentId) {
                             trHTML += 'id='+item.parentId;
                         }
-                        console.log($(td).css("padding-left"));
                         trHTML += '><td style="padding-left: calc(' + $(td).css("padding-left") + ' + 30px);">';
                             if (item.parentId) {
                                 trHTML += '<span id="plus" style="cursor: pointer;" s-name=' + item.parentId + '>+</span><span id="minus" style="cursor: pointer; display: none;" s-name=' + item.parentId + '>-</span> ';
@@ -147,6 +132,7 @@ $(document).on('click', '#plus', function () {
                             anId = it.id;
                             $.each(result.accessesMatrix, function (k, i) {
                                 if (i.action === anId && i.objectId === oId) {
+                                    console.log(i.objectId);
                                     trHTML += 'checked';
                                 }
                             })
@@ -170,3 +156,27 @@ $(document).on('click', '#minus', function () {
         }
     });
 })
+function recursiveChecked(trAll, tr, action) {
+    $(trAll).each(function(i, item) {
+        if ($(item).attr('data-id') === $(tr).attr('id')) {
+            if ($(item).find('input[action-id="' + action+ '"').attr('action-id') === action) {
+                $(item).find('input[action-id="' + action+ '"').prop("checked", true);
+            }
+            if ($(item).attr('id')) {
+                recursiveChecked(trAll, item, action)
+            }
+        }
+    });
+}
+function recursiveUnchecked(trAll, tr, action) {
+    $(trAll).each(function(i, item) {
+        if ($(item).attr('data-id') === $(tr).attr('id')) {
+            if ($(item).find('input[action-id="' + action+ '"').attr('action-id') === action) {
+                $(item).find('input[action-id="' + action+ '"').prop("checked", false);
+            }
+            if ($(item).attr('id')) {
+                recursiveUnchecked(trAll, item, action)
+            }
+        }
+    });
+}

@@ -6,11 +6,11 @@ namespace App\Controller;
 
 use App\Manager\AccessMatrixManager;
 use App\Manager\ActionManager;
-use App\Manager\BidManager;
+use App\Manager\Container\BidManager;
 use App\Manager\ObjectClassManager;
 use App\Manager\RoleManager;
-use App\Manager\WorksCtoManager;
-use App\Manager\WorkTypeManager;
+use App\Manager\Container\WorksCtoManager;
+use App\Manager\Container\WorkTypeManager;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
